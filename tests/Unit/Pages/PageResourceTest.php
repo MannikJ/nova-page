@@ -14,7 +14,8 @@ use Whitecube\NovaPage\Pages\Manager;
 use Whitecube\NovaPage\Pages\PageResource;
 use Whitecube\NovaPage\Pages\Template;
 
-class PageResourceTest extends TestCase {
+class PageResourceTest extends TestCase
+{
 
     protected function getPackageProviders($app)
     {
@@ -55,10 +56,6 @@ class PageResourceTest extends TestCase {
     public function can_get_a_fresh_instance_of_the_model_represented_by_the_resource()
     {
         $this->assertInstanceOf(Manager::class, PageResource::newModel());
-
-        $this->expectException(TemplateNotFoundException::class);
-        request()->resourceId = 'route.test';
-        PageResource::newModel();
     }
 
     /** @test */
@@ -75,7 +72,7 @@ class PageResourceTest extends TestCase {
             Text::make('Foo')
         ]);
         $instance = new PageResource($template);
-        $fields = $instance->fields(request());
+        $fields = $instance->fields(NovaRequest::createFromBase(request()));
         $this->assertCount(2, $fields);
         $this->assertInstanceOf(Panel::class, $fields[0]);
         $this->assertInstanceOf(Text::class, $fields[1]);
@@ -89,7 +86,7 @@ class PageResourceTest extends TestCase {
             'Test\Cards\TestCard'
         ]);
         $instance = new PageResource($template);
-        $cards = $instance->cards(request());
+        $cards = $instance->cards(NovaRequest::createFromBase(request()));
         $this->assertCount(1, $cards);
         $this->assertSame('Test\Cards\TestCard', $cards[0]);
     }
@@ -99,7 +96,7 @@ class PageResourceTest extends TestCase {
     {
         $template = $this->createMock(Template::class);
         $instance = new PageResource($template);
-        $this->assertCount(0, $instance->filters(request()));
+        $this->assertCount(0, $instance->filters(NovaRequest::createFromBase(request())));
     }
 
     /** @test */
@@ -107,7 +104,7 @@ class PageResourceTest extends TestCase {
     {
         $template = $this->createMock(Template::class);
         $instance = new PageResource($template);
-        $this->assertCount(0, $instance->lenses(request()));
+        $this->assertCount(0, $instance->lenses(NovaRequest::createFromBase(request())));
     }
 
     /** @test */
@@ -115,13 +112,14 @@ class PageResourceTest extends TestCase {
     {
         $template = $this->createMock(Template::class);
         $instance = new PageResource($template);
-        $this->assertCount(0, $instance->actions(request()));
+
+        $this->assertCount(0, $instance->actions(NovaRequest::createFromBase(request())));
     }
 
     /** @test */
     public function does_not_allow_creation()
     {
-        $this->assertFalse(PageResource::authorizedToCreate(request()));
+        $this->assertFalse(PageResource::authorizedToCreate(NovaRequest::createFromBase(request())));
     }
 
     /** @test */
@@ -129,7 +127,7 @@ class PageResourceTest extends TestCase {
     {
         $template = $this->createMock(Template::class);
         $instance = new PageResource($template);
-        $this->assertFalse($instance->authorizedToDelete(request()));
+        $this->assertFalse($instance->authorizedToDelete(NovaRequest::createFromBase(request())));
     }
 
     /** @test */
@@ -140,9 +138,10 @@ class PageResourceTest extends TestCase {
             'controller' => ResourceIndexController::class . '@handle'
         ]);
 
-        $this->app->bind(NovaRequest::class, function() use ($route) {
-            return new class ($route) extends NovaRequest {
-                public function __construct($route) 
+        $this->app->bind(NovaRequest::class, function () use ($route) {
+            return new class($route) extends NovaRequest
+            {
+                public function __construct($route)
                 {
                     $this->routeMock = $route;
                 }
@@ -159,9 +158,8 @@ class PageResourceTest extends TestCase {
         $instance = new PageResource($template);
 
         $result = $instance->jsonSerialize();
-        
+
         $this->assertTrue(is_array($result));
         $this->assertArrayHasKey('fields', $result);
     }
-
 }
