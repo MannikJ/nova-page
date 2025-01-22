@@ -12,6 +12,8 @@ use Whitecube\NovaPage\Exceptions\ValueNotFoundException;
 use Whitecube\NovaPage\Exceptions\TemplateContentNotFoundException;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Illuminate\Database\Eloquent\Model;
+
 abstract class Template implements ArrayAccess
 {
     use HasAttributes;
@@ -160,6 +162,22 @@ abstract class Template implements ArrayAccess
             function(Carbon $new, Carbon $current = null) {
                 return (!$current || $new->greaterThan($current));
             });
+    }
+
+    /**
+     * Force Fill the layout with an array of attributes.
+     *
+     * @param  array  $attributes
+     * @return $this
+     */
+    public function forceFill(array $attributes)
+    {
+        foreach ($attributes as $key => $value) {
+            $attribute = \Str::replace('->', '.', $key);
+            \Arr::set($this->attributes, $attribute, $value);
+        }
+
+        return $this;
     }
 
     /**
@@ -501,6 +519,17 @@ abstract class Template implements ArrayAccess
     public function getRaw()
     {
         return $this->raw;
+    }
+
+    
+    /**
+     * Determine if accessing missing attributes is disabled.
+     *
+     * @return bool
+     */
+    public static function preventsAccessingMissingAttributes()
+    {
+        return Model::preventsAccessingMissingAttributes();
     }
 
 }
