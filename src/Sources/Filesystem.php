@@ -61,7 +61,6 @@ class Filesystem implements SourceInterface
      */
     public function store(Template $template)
     {
-        dump($template->getTitle());
         $data = [];
         $data['title'] = $template->getTitle();
         $data['created_at'] = $template->getdate('created_at');
