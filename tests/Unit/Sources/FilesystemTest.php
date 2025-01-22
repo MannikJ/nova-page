@@ -103,7 +103,9 @@ class FilesystemTest extends TestCase {
 
         $this->rmrf(__dir__ . '/../../test-application/resources/lang/route');
 
+
         $instance->store($template);
+
         $this->assertDirectoryExists(__dir__ . '/../../test-application/resources/lang/route');
         $this->assertFileExists(__dir__ . '/../../test-application/resources/lang/route/test.json');
     }

@@ -33,7 +33,8 @@ abstract class StaticResource extends Resource
      * @var array
      */
     public static $search = [
-        'title', 'name'
+        'title',
+        'name'
     ];
     /**
      * Indicates if the resource should be displayed in the sidebar.
@@ -226,7 +227,13 @@ abstract class StaticResource extends Resource
      */
     public function jsonSerialize(): array
     {
-        return $this->serializeWithId($this->resolveFields(resolve(NovaRequest::class)));
+        return $this->serializeWithId(
+                $this->resolveFields(
+                    resolve(
+                        NovaRequest::class
+                    )
+                )
+            );
     }
 
     /**
@@ -238,11 +245,10 @@ abstract class StaticResource extends Resource
     protected function serializeWithId(Collection $fields)
     {
         return [
-            'id' => tap(ID::make('id', function() {
-                        return $this->getKey();
-                    }))->resolve($this->resource),
+            'id' => tap(ID::make('id', function () {
+                return $this->getKey();
+            }))->resolve($this->resource),
             'fields' => $fields->all(),
         ];
     }
-
 }

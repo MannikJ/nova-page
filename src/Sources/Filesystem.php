@@ -61,10 +61,11 @@ class Filesystem implements SourceInterface
      */
     public function store(Template $template)
     {
+        dump($template->getTitle());
         $data = [];
         $data['title'] = $template->getTitle();
-        $data['created_at'] = $template->getdate('created_at')->toDateTimeString();
-        $data['updated_at'] = Carbon::now()->toDateTimeString();
+        $data['created_at'] = $template->getdate('created_at');
+        $data['updated_at'] = Carbon::now();
         $data['attributes'] = $template->getAttributes();
 
         $path = $this->getOriginal($template);
