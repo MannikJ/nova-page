@@ -9,3 +9,4 @@ composer.lock
 Thumbs.db
 auth.json
 .phpunit.cache
+/tests/test-application/resources/lang/route/test.json
