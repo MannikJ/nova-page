@@ -174,6 +174,17 @@ abstract class StaticResource extends Resource
         return [];
     }
 
+    public static function authorizationGate()
+    {
+        return null;
+    }
+
+    public static function authorizable()
+    {
+        return false;
+    }
+    
+
     /**
      * Determine if the current user can create new resources.
      *
@@ -245,7 +256,7 @@ abstract class StaticResource extends Resource
     protected function serializeWithId(Collection $fields)
     {
         return [
-            'id' => tap(ID::make('id', function () {
+            'id' => tap(ID::make('id', 'id', function () {
                 return $this->getKey();
             }))->resolve($this->resource),
             'fields' => $fields->all(),
